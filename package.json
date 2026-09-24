@@ -1,0 +1,28 @@
+{
+  "name": "line-stock",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "db:create": "wrangler d1 create line-stock",
+    "db:migrate:local": "wrangler d1 migrations apply line-stock --local",
+    "db:migrate": "wrangler d1 migrations apply line-stock --remote",
+    "db:seed:local": "wrangler d1 execute line-stock --local --file=./seed.sql",
+    "db:seed": "wrangler d1 execute line-stock --remote --file=./seed.sql",
+    "tail": "wrangler tail",
+    "deploy:mine": "wrangler deploy -c wrangler.prod.jsonc",
+    "db:migrate:mine": "wrangler d1 migrations apply line-stock --remote -c wrangler.prod.jsonc",
+    "db:seed:mine": "wrangler d1 execute line-stock --remote --file=./seed.sql -c wrangler.prod.jsonc"
+  },
+  "dependencies": {
+    "hono": "^4.6.14"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260828.1",
+    "typescript": "^5.7.2",
+    "wrangler": "^4.0.0"
+  }
+}

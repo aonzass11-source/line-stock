@@ -1,0 +1,9 @@
+# คัดลอกไฟล์นี้เป็น .dev.vars สำหรับรัน local (wrangler dev)
+LINE_CHANNEL_SECRET="channel secret ของ Messaging API"
+LINE_CHANNEL_ACCESS_TOKEN="long-lived channel access token"
+LINE_LOGIN_CHANNEL_ID="channel id ของ LINE Login (ตัวเลข)"
+LIFF_ID="1234567890-abcdefgh"
+ENVIRONMENT="dev"
+# ใช้ทดสอบหน้า LIFF ในเบราว์เซอร์ปกติ (ทำงานเฉพาะเมื่อ ENVIRONMENT=dev)
+DEV_LINE_USER_ID="Udevuser0000000000000000000000000"
+DEV_LINE_DISPLAY_NAME="นักพัฒนา (Dev)"

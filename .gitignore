@@ -1,0 +1,9 @@
+node_modules/
+.wrangler/
+.dev.vars
+dist/
+.DS_Store
+
+# config production ส่วนตัว (ห้ามขึ้น git)
+wrangler.prod.jsonc
+*.local.md

@@ -1,0 +1,35 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "line-stock",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-01",
+  "observability": { "enabled": true },
+
+  // ตารางเวลาสำรอง: 01:00 UTC = 08:00 น. ทุกวัน (เวลามาตรฐานไทย)
+  // หมายเหตุ: หลังแก้ตาราง ระบบใช้เวลาเผยแพร่สูงสุด 15 นาที — ห้ามตั้งยิงใกล้กว่านั้น
+  // ตัวปลุกหลักคือประตูลับ /cron/daily-alert (เว็บภายนอกยิงมา) — กันส่งซ้ำวันละครั้์อยู่ในโค้ดแล้ว
+  "triggers": {
+    "crons": ["0 1 * * *"]
+  },
+
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "none"
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "line-stock",
+      "database_id": "521a93a8-4041-43fe-b878-11a8ecd6596d",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  "vars": {
+    "ENVIRONMENT": "production",
+    "LINE_LOGIN_CHANNEL_ID": "2011692302",
+    "LIFF_ID": "2011692302-LPCJnbjb"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "size": { "width": 2500, "height": 1686 },
+  "selected": true,
+  "name": "Stock Bot - เมนูหลัก",
+  "chatBarText": "เมนูสต๊อก",
+  "areas": [
+    { "bounds": { "x": 0, "y": 0, "width": 833, "height": 843 },
+      "action": { "type": "uri", "label": "แดชบอร์ด", "uri": "https://liff.line.me/__LIFF_ID__" } },
+    { "bounds": { "x": 833, "y": 0, "width": 834, "height": 843 },
+      "action": { "type": "postback", "label": "เช็คสต๊อก", "data": "a=noop&k=check", "inputOption": "openKeyboard", "fillInText": "เช็ค " } },
+    { "bounds": { "x": 1667, "y": 0, "width": 833, "height": 843 },
+      "action": { "type": "postback", "label": "เบิกของ", "data": "a=noop&k=issue", "inputOption": "openKeyboard", "fillInText": "เบิก " } },
+    { "bounds": { "x": 0, "y": 843, "width": 833, "height": 843 },
+      "action": { "type": "postback", "label": "รับเข้า", "data": "a=noop&k=receive", "inputOption": "openKeyboard", "fillInText": "รับเข้า " } },
+    { "bounds": { "x": 833, "y": 843, "width": 834, "height": 843 },
+      "action": { "type": "message", "label": "ของใกล้หมด", "text": "ใกล้หมด" } },
+    { "bounds": { "x": 1667, "y": 843, "width": 833, "height": 843 },
+      "action": { "type": "message", "label": "วิธีใช้", "text": "ช่วยเหลือ" } }
+  ]
+}

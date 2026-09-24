@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="th"><head><meta charset="utf-8"><style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:2500px; height:1686px; }
+body {
+  font-family:'Noto Sans Thai','Thonburi',sans-serif;
+  background:#FFFFFF; display:grid;
+  grid-template-columns:833px 834px 833px; grid-template-rows:843px 843px;
+}
+.cell { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:34px; }
+.cell::after { content:''; position:absolute; right:0; top:12%; height:76%; width:3px; background:#ECEEF2; }
+.cell:nth-child(3n)::after { display:none; }
+.cell:nth-child(-n+3)::before { content:''; position:absolute; bottom:0; left:9%; width:82%; height:3px; background:#ECEEF2; }
+.badge { width:186px; height:186px; border-radius:52px; display:grid; place-items:center; }
+svg { width:104px; height:104px; fill:none; stroke-width:1.85; stroke-linecap:round; stroke-linejoin:round; }
+.label { font-size:74px; font-weight:600; color:#0F172A; letter-spacing:-.01em; line-height:1; }
+.sub { font-size:44px; color:#9AA3B0; line-height:1; margin-top:-14px; }
+
+/* ปุ่มหลัก: แดชบอร์ด */
+.primary { background:#0F172A; }
+.primary::after { background:#243044; }
+.primary::before { background:#243044 !important; left:0 !important; width:100% !important; }
+.primary .badge { background:rgba(255,255,255,.13); }
+.primary svg { stroke:#FFFFFF; }
+.primary .label { color:#FFFFFF; }
+.primary .sub { color:#8A94A6; }
+</style></head><body>
+
+<div class="cell primary">
+  <div class="badge"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm10 7h6v-9h-6v9ZM4 20h6v-4H4v4ZM14 8h6V4h-6v4Z"/></svg></div>
+  <div class="label">แดชบอร์ด</div><div class="sub">ดูสต๊อกทั้งหมด</div>
+</div>
+
+<div class="cell">
+  <div class="badge" style="background:#EAF1FE"><svg viewBox="0 0 24 24" style="stroke:#3B82F6"><path d="M21 21l-4.3-4.3M17 10.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z"/></svg></div>
+  <div class="label">เช็คสต๊อก</div><div class="sub">ค้นหาสินค้า</div>
+</div>
+
+<div class="cell">
+  <div class="badge" style="background:#FDECEC"><svg viewBox="0 0 24 24" style="stroke:#E5484D"><path d="M12 3v10m0-10-4 4m4-4 4 4M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg></div>
+  <div class="label">เบิกของ</div><div class="sub">ตัดสต๊อกออก</div>
+</div>
+
+<div class="cell">
+  <div class="badge" style="background:#E4F5EE"><svg viewBox="0 0 24 24" style="stroke:#0E9F6E"><path d="M12 13V3m0 10 4-4m-4 4-4-4M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg></div>
+  <div class="label">รับเข้า</div><div class="sub">เพิ่มสต๊อก</div>
+</div>
+
+<div class="cell">
+  <div class="badge" style="background:#FEF3E2"><svg viewBox="0 0 24 24" style="stroke:#F59E0B"><path d="M12 4.5 2.8 20a1 1 0 0 0 .87 1.5h16.66a1 1 0 0 0 .87-1.5L12 4.5Z"/><path d="M12 10v4.5M12 18h.01"/></svg></div>
+  <div class="label">ของใกล้หมด</div><div class="sub">ต้องสั่งซื้อเพิ่ม</div>
+</div>
+
+<div class="cell">
+  <div class="badge" style="background:#F1F3F6"><svg viewBox="0 0 24 24" style="stroke:#64748B"><circle cx="12" cy="12" r="9.2"/><path d="M9.4 9.3a2.7 2.7 0 0 1 5.2.9c0 1.8-2.6 2.7-2.6 2.7M12 17.2h.01"/></svg></div>
+  <div class="label">วิธีใช้</div><div class="sub">คำสั่งทั้งหมด</div>
+</div>
+
+</body></html>
