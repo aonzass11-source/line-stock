@@ -39,7 +39,7 @@ api.get('/summary', async (c) => {
        GROUP BY l.id ORDER BY l.is_default DESC, l.code`,
     )
     .all();
-  return c.json({ summary, low, recent, locations, monthly, byLocation: byLocation.results ?? [] });
+  return c.json({ summary, low, recent, locations, monthly, stockValue, byLocation: byLocation.results ?? [] });
 });
 
 /* ------------------------------------------------------------ locations */
