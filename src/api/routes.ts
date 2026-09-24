@@ -19,12 +19,13 @@ api.get('/me', (c) => c.json(c.get('user')));
 
 api.get('/summary', async (c) => {
   const db = c.env.DB;
-  const [summary, low, recent, locations, monthly] = await Promise.all([
+  const [summary, low, recent, locations, monthly, stockValue] = await Promise.all([
     repo.getSummary(db),
     repo.lowStockProducts(db, 8),
     repo.listMovements(db, { limit: 12 }),
     repo.listLocations(db),
     repo.monthlyReport(db),
+    repo.stockValueByLocation(db),
   ]);
   const byLocation = await db
     .prepare(

@@ -194,10 +194,13 @@ export async function createProduct(db: D1Database, input: Partial<Product>): Pr
   const sku = input.sku?.trim() || (await nextSku(db));
   const dup = await db.prepare('SELECT id FROM products WHERE sku = ?').bind(sku).first();
   if (dup) throw new AppError(`รหัสสินค้า ${sku} ถูกใช้ไปแล้ว`);
+  const rawPrice = input.price as number | null | undefined | '';
+  const price = rawPrice === undefined || rawPrice === null || rawPrice === '' ? null : Number(rawPrice);
+  if (price !== null && Number.isNaN(price)) throw new AppError('ราคาสินค้าไม่ถูกต้อง');
   const row = await db
     .prepare(
-      `INSERT INTO products (sku, name, category, unit, min_qty, note)
-       VALUES (?, ?, ?, ?, ?, ?) RETURNING *`,
+      `INSERT INTO products (sku, name, category, unit, min_qty, note, price)
+       VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING *`,
     )
     .bind(
       sku,
@@ -206,6 +209,7 @@ export async function createProduct(db: D1Database, input: Partial<Product>): Pr
       input.unit?.trim() || 'ชิ้น',
       Number(input.min_qty ?? 0),
       input.note?.trim() || null,
+      price,
     )
     .first<Product>();
   return row!;
@@ -219,9 +223,12 @@ async function nextSku(db: D1Database): Promise<string> {
 export async function updateProduct(db: D1Database, id: number, patch: Partial<Product>): Promise<Product | null> {
   const current = await getProduct(db, id);
   if (!current) throw new AppError('ไม่พบสินค้า', 404);
+  const rawPrice = patch.price as number | null | undefined | '';
+  const price = rawPrice === undefined ? current.price : rawPrice === null || rawPrice === '' ? null : Number(rawPrice);
+  if (price !== null && Number.isNaN(price)) throw new AppError('ราคาสินค้าไม่ถูกต้อง');
   await db
     .prepare(
-      `UPDATE products SET sku = ?, name = ?, category = ?, unit = ?, min_qty = ?, note = ?, active = ?,
+      `UPDATE products SET sku = ?, name = ?, category = ?, unit = ?, min_qty = ?, note = ?, price = ?, active = ?,
          updated_at = datetime('now') WHERE id = ?`,
     )
     .bind(
@@ -231,6 +238,7 @@ export async function updateProduct(db: D1Database, id: number, patch: Partial<P
       (patch.unit ?? current.unit).trim(),
       Number(patch.min_qty ?? current.min_qty),
       patch.note !== undefined ? patch.note?.trim() || null : current.note,
+      price,
       patch.active ?? current.active,
       id,
     )
@@ -532,6 +540,22 @@ export async function lowStockProducts(db: D1Database, limit = 50): Promise<Prod
     )
     .bind(limit)
     .all<ProductWithStock>();
+  return results ?? [];
+}
+
+/** มูลค่าสินค้าคงเหลือรายคลัง (คงเหลือ × ราคาสินค้า) — ใช้ในกราฟหน้าภาพรวม */
+export async function stockValueByLocation(db: D1Database): Promise<{ id: number; code: string; name: string; value: number }[]> {
+  const { results } = await db
+    .prepare(
+      `SELECT l.id, l.code, l.name,
+              COALESCE(SUM(CASE WHEN p.active = 1 THEN s.qty * COALESCE(p.price, 0) ELSE 0 END), 0) AS value
+       FROM locations l
+       LEFT JOIN stock_levels s ON s.location_id = l.id
+       LEFT JOIN products p ON p.id = s.product_id
+       WHERE l.active = 1
+       GROUP BY l.id ORDER BY l.is_default DESC, l.code`,
+    )
+    .all<{ id: number; code: string; name: string; value: number }>();
   return results ?? [];
 }
 

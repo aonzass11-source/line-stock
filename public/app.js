@@ -301,6 +301,29 @@ function renderOverview(data) {
 
   renderMonthly(data);
   renderDonut(data);
+  renderValue(data);
+}
+
+/** กราฟมูลค่าสต๊อกคงเหลือรายคลัง (คงเหลือ × ราคาสินค้า) */
+function renderValue(data) {
+  const rows = (data.stockValue ?? []).filter((l) => Number(l.value) > 0);
+  const total = rows.reduce((s, l) => s + Number(l.value), 0);
+  $('#valueTotal').textContent = total > 0 ? `รวม ฿${fmt(total)}` : 'ยังไม่มีราคา';
+  const max = Math.max(1, ...rows.map((l) => Number(l.value)));
+  $('#valueBars').innerHTML = rows.length
+    ? rows
+        .map(
+          (l) => `
+      <div class="loc-bar">
+        <div class="loc-bar__top">
+          <span class="loc-bar__name">${esc(l.name)}</span>
+          <span class="loc-bar__value">฿${fmt(l.value)}</span>
+        </div>
+        <div class="loc-bar__track"><div class="loc-bar__fill" style="width:${((Number(l.value) || 0) / max) * 100}%"></div></div>
+      </div>`,
+        )
+        .join('')
+    : '<div class="empty">ยังไม่ได้กรอกราคาสินค้า — เข้าแท็บสินค้า → กดสินค้า → แก้ไข → ใส่ "ราคาสินค้า" แล้วกราฟจะขึ้น</div>';
 }
 
 /* ------------------------------------------------------- กราฟประจำเดือน */
@@ -427,6 +450,7 @@ function productRow(p, plain = false) {
       <div class="item__name">${esc(p.name)}</div>
       <div class="item__meta">
         <span>${esc(p.sku)}</span>
+        ${p.price != null ? `<span>· ฿${fmt(p.price)}</span>` : ''}
         ${p.category ? `<span>· ${esc(p.category)}</span>` : ''}
         ${badge ? `<span class="badge badge--${cls}">${badge}</span>` : ''}
       </div>
@@ -545,6 +569,11 @@ async function openProduct(id) {
         ${product.min_qty > 0 ? `จุดสั่งซื้อขั้นต่ำ ${fmt(product.min_qty)} ${esc(product.unit)}` : 'ยังไม่ตั้งจุดสั่งซื้อ'}
         ${product.category ? ' · ' + esc(product.category) : ''}
       </div>
+      ${
+        product.price != null
+          ? `<div style="font-size:12px;color:var(--muted);margin-top:2px">ราคาสินค้า ฿${fmt(product.price)} ต่อ${esc(product.unit)} · มูลค่าคงเหลือ ฿${fmt(Number(product.price) * total)}</div>`
+          : ''
+      }
 
       <div class="btn-grid" style="margin-top:16px">
         <button class="btn btn--issue" data-move="issue" data-id="${product.id}">📤 เบิกออก</button>
@@ -725,6 +754,7 @@ function openProductForm(product = null) {
         <div class="field"><label>หมวดหมู่</label><input name="category" value="${esc(p.category ?? '')}" placeholder="เช่น เครื่องเขียน" /></div>
         <div class="field"><label>จุดสั่งซื้อขั้นต่ำ</label><input name="min_qty" type="number" min="0" step="any" value="${p.min_qty ?? 0}" /></div>
       </div>
+      <div class="field"><label>ราคาสินค้า (บาทต่อหน่วย)</label><input name="price" type="number" min="0" step="0.01" value="${p.price ?? ''}" placeholder="เว้นว่างถ้ายังไม่ทราบราคา" /></div>
       ${
         product
           ? ''

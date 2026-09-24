@@ -27,6 +27,8 @@ export interface Product {
   category: string | null;
   unit: string;
   min_qty: number;
+  /** ราคาสินค้า (บาทต่อหน่วย) — ใช้คํานวณมูลค่าสต๊อกคงเหลือ */
+  price: number | null;
   note: string | null;
   active: number;
   created_at: string;
