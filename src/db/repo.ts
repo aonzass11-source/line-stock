@@ -559,6 +559,34 @@ export async function stockValueByLocation(db: D1Database): Promise<{ id: number
   return results ?? [];
 }
 
+export interface StockExportRow {
+  sku: string;
+  name: string;
+  category: string | null;
+  unit: string;
+  min_qty: number;
+  price: number | null;
+  loc_name: string;
+  qty: number;
+}
+
+/** แถวส่งออกสำหรับเช็คสต๊อกด้วยมือ: สินค้าทุกตัว × ทุกคลัง (ปุ่มดาวน์โหลด + เมนู Google Sheets) */
+export async function exportStockRows(db: D1Database): Promise<StockExportRow[]> {
+  const { results } = await db
+    .prepare(
+      `SELECT p.sku, p.name, p.category, p.unit, p.min_qty, p.price,
+              l.name AS loc_name,
+              COALESCE(s.qty, 0) AS qty
+       FROM products p
+       CROSS JOIN locations l
+       LEFT JOIN stock_levels s ON s.product_id = p.id AND s.location_id = l.id
+       WHERE p.active = 1 AND l.active = 1
+       ORDER BY p.sku, l.code`,
+    )
+    .all<StockExportRow>();
+  return results ?? [];
+}
+
 /** สินค้าที่คงเหลือรวมทุกคลัง "น้อยกว่า" ค่าที่กำหนด (ใช้โดยการแจ้งเตือนอัตโนมัติทุกวัน) */
 export async function stockBelow(db: D1Database, threshold: number): Promise<ProductWithStock[]> {
   const { results } = await db

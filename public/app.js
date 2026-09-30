@@ -907,6 +907,47 @@ function switchTab(tab) {
   if (tab === 'history') renderHistory();
 }
 
+/* ------------------------------------------------ ส่งออกสต๊อก (.csv) เช็คด้วยมือ */
+
+/** เขียนค่าเป็นเซลล์ CSV (ครอบด้วยเครื่องหมายคำพูด หนีเครื่องหมายคำพูดซ้ำ) */
+function csvCell(v) {
+  const s = v == null ? '' : String(v);
+  return `"${s.replace(/"/g, '""')}"`;
+}
+
+/** ดึงยอดสต๊อกทุกสินค้า×ทุกคลัง แล้วดาวน์โหลดเป็นไฟล์ .csv (เปิดใน Google Sheets ได้ ภาษาไทยไม่เพี้ยน) */
+async function exportStockCsv() {
+  try {
+    const { rows } = await api('/export/stock');
+    const head = ['รหัสสินค้า', 'ชื่อสินค้า', 'หมวดหมู่', 'หน่วย', 'คลัง', 'ยอดระบบ', 'จุดสั่งซื้อขั้นต่ำ', 'ราคา (บาท)', 'มูลค่า (บาท)', 'นับจริง', 'ผลต่าง'];
+    const lines = [head.map(csvCell).join(',')];
+    rows.forEach((r, i) => {
+      const rowNo = i + 2;
+      lines.push(
+        [
+          r.sku, r.name, r.category || '', r.unit, r.loc_name, r.qty, r.min_qty,
+          r.price == null ? '' : r.price,
+          r.price == null ? '' : r.price * r.qty,
+          '',
+          `=IF(J${rowNo}="","",J${rowNo}-F${rowNo})`,
+        ]
+          .map(csvCell)
+          .join(','),
+      );
+    });
+    const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `stock-${new Date(Date.now() + 7 * 3600_000).toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('ดาวน์โหลดไฟล์สต๊อกแล้ว', 'ok');
+  } catch (err) {
+    toast(err.message, 'error');
+  }
+}
+
 /* ---------------------------------------------------------- listeners */
 
 document.addEventListener('click', (e) => {
@@ -942,6 +983,7 @@ document.addEventListener('click', (e) => {
 
   if (e.target.closest('#addProductBtn')) return openProductForm();
   if (e.target.closest('#addLocationBtn')) return openLocationForm();
+  if (e.target.closest('#exportBtn')) return exportStockCsv();
 
   const chip = e.target.closest('#statusChips .chip[data-status]');
   if (chip) {

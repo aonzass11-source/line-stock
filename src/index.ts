@@ -74,6 +74,13 @@ app.get('/cron/daily-alert', async (c) => {
   return c.json({ ok: true, result });
 });
 
+/* ประตูลับสำหรับ Google Sheets (เมนู Apps Script) ดึงข้อมูลสต๊อกไปเช็คของด้วยมือ — ใช้กุญแจเดียวกับด้านบน */
+app.get('/export/stock', async (c) => {
+  const key = c.req.query('key');
+  if (!c.env.CRON_KEY || key !== c.env.CRON_KEY) return c.json({ error: 'ไม่พบเส้นทางนี้' }, 404);
+  return c.json({ rows: await repo.exportStockRows(c.env.DB) });
+});
+
 /* ------------------------------------------------------------ REST API */
 
 app.route('/api', api);

@@ -42,6 +42,9 @@ api.get('/summary', async (c) => {
   return c.json({ summary, low, recent, locations, monthly, stockValue, byLocation: byLocation.results ?? [] });
 });
 
+/* ส่งออกข้อมูลสต๊อกสำหรับเช็คแบบ manual — ปุ่มดาวน์โหลดในหน้าแดชบอร์ด (อยู่หลังล็อกอิน) */
+api.get('/export/stock', async (c) => c.json({ rows: await repo.exportStockRows(c.env.DB) }));
+
 /* ------------------------------------------------------------ locations */
 
 api.get('/locations', async (c) => c.json(await repo.listLocations(c.env.DB, false)));
