@@ -3,7 +3,7 @@
 # 📦 LINE Stock
 
 **ระบบจัดการสต๊อกสินค้าที่สั่งงานผ่านแชท LINE พร้อมแดชบอร์ดในแอป LINE**
-รันบน Cloudflare Workers + D1 · ค่าใช้จ่าย 0 บาทสำหรับการใช้งานทั่วไป
+รันบน Cloudflare Workers + D1 · สำหรับการใช้งานทั่วไป
 
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F38020?logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
 [![D1](https://img.shields.io/badge/Cloudflare-D1-F38020?logo=cloudflare&logoColor=white)](https://developers.cloudflare.com/d1/)
